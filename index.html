@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Data Analysis 4</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Data Analysis 4">
+  <meta name="author" content="Dr Axel Barlow">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/zenburn.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/custom.css"></link>
+<link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+    
+  <slide class="nobackground">
+    <article class="flexbox vcenter">
+      <span>
+        <img width='300px' src="assets/img/NTU_open-graph.png">
+      </span>
+    </article>
+  </slide>
+    <slide class="title-slide segue nobackground">
+  
+  <aside class="gdbar">
+    <img src="assets/img/ntu-shield.png">
+  </aside>
+  
+  <hgroup class="auto-fadein">
+    <h1>Data Analysis 4</h1>
+    <h2>BIOL10272: Practical Techniques</h2>
+    <p>Dr Axel Barlow<br/>email: axel.barlow@ntu.ac.uk</p>
+  </hgroup>
+  
+    <a href="https://github.com/draxelbarlow/BIOL10272_data_analysis_4/zipball/gh-pages" class="example">
+     Download
+    </a>
+  
+  <article></article>  
+      
+  <footer class = 'license'>
+    <a href='http://creativecommons.org/licenses/by-nc-sa/3.0/'>
+    <img width = '80px' src = 'http://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png'>
+    </a>
+  </footer>
+  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  
+  <article data-timings="">
+    <!-- adding bold and italic options -->
+
+<style>
+em {
+  font-style: italic
+}
+strong {
+  font-weight: bold;
+}
+</style>
+
+<h2>Data analysis 4</h2>
+
+<ul>
+<li>Visualising two quantitative variables: scatterplots</li>
+<li>Dependent and independent variables</li>
+<li>Fitting a linear relationship: <code>least squares</code></li>
+<li>Correlation coefficients: <code>r</code></li>
+<li>Interpreting a correlation</li>
+<li>Quantifying the linear relationship</li>
+<li>Modelling the relationship: linear regression</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="segue dark" id="slide-2" style="background:;">
+  
+  <hgroup>
+    <h2>Visualising two quantitative variables</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="slide-3" style="background:white;">
+  
+  <hgroup>
+    <h2>One categorical variable, one quantitative variable</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <p><img src="assets/fig/unnamed-chunk-1-1.png" title="plot of chunk unnamed-chunk-1" alt="plot of chunk unnamed-chunk-1" width="100%" height="100%" style="display: block; margin: auto;" /></p>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="slide-4" style="background:white;">
+  
+  <hgroup>
+    <h2>Two quantitative variables</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <p><img src="assets/fig/unnamed-chunk-2-1.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" width="95%" style="display: block; margin: auto auto auto 0;" /></p>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  
+  <hgroup>
+    <h2>Which variable goes on which axis?</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <ul>
+<li>We need to identify the <code>independent</code> and <code>dependent</code> variables</li>
+<li>The independent variable goes on the <em>x</em> axis</li>
+<li>The dependent variable goes on the <em>y</em> axis</li>
+</ul>
+
+<h3>In an experiment</h3>
+
+<ul>
+<li>The independent variable is <strong>the thing we manipulate</strong></li>
+<li>The dependent variable is <strong>the thing we expect to change</strong></li>
+<li>We hypothesise the independent variable has an effect on the dependendent variable</li>
+<li>The null hypothesis is no effect</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  
+  <hgroup>
+    <h2>Examples</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <table><thead>
+<tr>
+<th>Dependent variable</th>
+<th>Independent variable</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Number of species</td>
+<td>Habitat</td>
+</tr>
+<tr>
+<td>Blood pressure</td>
+<td>Drug test and control groups</td>
+</tr>
+<tr>
+<td>Number of genes</td>
+<td>Free living or parasitic microorganism</td>
+</tr>
+<tr>
+<td>Disease prevalence</td>
+<td>Country</td>
+</tr>
+<tr>
+<td>Gene expression</td>
+<td>Developmental stage</td>
+</tr>
+</tbody></table>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="slide-7" style="background:white;">
+  
+  <hgroup>
+    <h2>ELISA assay development</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <ul>
+<li>Measure optical density at known protein concentrations</li>
+</ul>
+
+<p><img src="assets/fig/unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="85%" style="display: block; margin: auto auto auto 0;" /></p>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="segue dark" id="slide-8" style="background:;">
+  
+  <hgroup>
+    <h2>Sometimes, it&#39;s uncertain</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="slide-9" style="background:white;">
+  
+  <hgroup>
+    <h2>Exploratory analysis of Gentoo penguin data</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <p><img src="assets/fig/unnamed-chunk-4-1.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" width="95%" style="display: block; margin: auto auto auto 0;" /></p>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="slide-10" style="background:white;">
+  
+  <hgroup>
+    <h2>Exploratory analysis of Gentoo penguin data</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <p><img src="assets/fig/unnamed-chunk-5-1.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" width="95%" style="display: block; margin: auto auto auto 0;" /></p>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="segue dark" id="slide-11" style="background:;">
+  
+  <hgroup>
+    <h2>Fitting a linear relationship</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  
+  <hgroup>
+    <h2>Correlation</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <p>A connection, or relationship, between two or more things</p>
+
+<h3>In Biosciences</h3>
+
+<p>A linear relationship between two quantitative variables</p>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="" id="slide-13" style="background:;">
+  
+  <hgroup>
+    <h2>Linear relationship</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <ul>
+<li>The points in the scatterplot form a straight line</li>
+</ul>
+
+<div style='float:left;width:48%;' class='centered'>
+  <p><img src="assets/fig/unnamed-chunk-6-1.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" width="90%" style="display: block; margin: auto auto auto 0;" /></p>
+
+<ul>
+<li>Positive correlation</li>
+</ul>
+
+</div>
+<div style='float:right;width:48%;'>
+  <p><img src="assets/fig/unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" width="90%" style="display: block; margin: auto auto auto 0;" /></p>
+
+<ul>
+<li>Negative correlation</li>
+</ul>
+
+</div>
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="slide-14" style="background:white;">
+  
+  <hgroup>
+    <h2>Fitting a linear relationship to real data</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <ul>
+<li>We can add a <code>line of best fit</code> using the method of <code>least squares</code></li>
+<li>The straight line that minimises the square of the <code>residuals</code></li>
+</ul>
+
+<p><img src="assets/fig/unnamed-chunk-8-1.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" width="80%" style="display: block; margin: auto;" /></p>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="slide-15" style="background:white;">
+  
+  <hgroup>
+    <h2>Fitting a linear relationship to real data</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <ul>
+<li>We can add a <code>line of best fit</code> using the method of <code>least squares</code></li>
+<li>The straight line that minimises the square of the <code>residuals</code></li>
+</ul>
+
+<p><img src="assets/fig/unnamed-chunk-9-1.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" width="80%" style="display: block; margin: auto;" /></p>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  
+  <hgroup>
+    <h2>Calculating the strength of the relationship</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <h3>If the residuals are small, the variables have a strong linear relationship</h3>
+
+<ul>
+<li>We can measure this strength using a <code>correlation coefficient</code></li>
+<li>We will use the <code>Pearson correlation coefficient</code>, which can be represented as <code>r</code></li>
+<li>Scales from -1 to +1</li>
+<li>0 = <strong>no</strong> linear relationship</li>
+<li>+1 = perfect <strong>positive</strong> linear relationship</li>
+<li>-1 = perfect <strong>negative</strong> linear relationship</li>
+<li>We can also obtain a <code>p-value</code></li>
+<li><strong>Null hypothesis</strong>: there is no linear relationship, the true <code>r</code> = 0</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="slide-17" style="background:white;">
+  
+  <hgroup>
+    <h2><code>r</code> shows the strength of correlation</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <p><img src="assets/fig/unnamed-chunk-10-1.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" width="100%" style="display: block; margin: auto;" /></p>
+
+<p><em>R code for plot by Denis Boigelot</em></p>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="slide-18" style="background:white;">
+  
+  <hgroup>
+    <h2>The slope does not affect <code>r</code></h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <p><img src="assets/fig/unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" width="100%" style="display: block; margin: auto;" /></p>
+
+<p><em>R code for plot by Denis Boigelot</em></p>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="slide-19" style="background:white;">
+  
+  <hgroup>
+    <h2>Pearson correlation for penguin data</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <p><img src="assets/fig/unnamed-chunk-12-1.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" width="95%" style="display: block; margin: auto auto auto 0;" /></p>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="segue dark" id="slide-20" style="background:;">
+  
+  <hgroup>
+    <h2>Interpreting a correlation</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  
+  <hgroup>
+    <h2>Scientists have found the gene for...</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <iframe src = 'https://news.sky.com/story/covid-19-gene-that-doubles-risk-of-death-from-covid-identified-by-oxford-university-scientists-12459684' height='600px'></iframe>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="slide-22" style="background:white;">
+  
+  <hgroup>
+    <h2>Eating ice cream does not cause dehydration</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <p><img src="assets/fig/unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" width="90%" style="display: block; margin: auto;" /></p>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="segue dark" id="slide-23" style="background:;">
+  
+  <hgroup>
+    <h2>Quantifying the linear relationship</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="slide-24" style="background:white;">
+  
+  <hgroup>
+    <h2><code>r</code> does not provide information on slope</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <h3>but isn&#39;t the slope interesting?</h3>
+
+<p><img src="assets/fig/unnamed-chunk-14-1.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" width="100%" style="display: block; margin: auto;" /></p>
+
+<p><em>R code for plot by Denis Boigelot</em></p>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  
+  <hgroup>
+    <h2>Limitations of correlation</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <ul>
+<li>We would like to be able to <strong>quantify</strong> how much a variable changes</li>
+<li>This would allow us to <strong>predict</strong> the value of one variable if we know the value of another</li>
+<li>Even <code>extrapolate</code> beyond the range of measurement</li>
+</ul>
+
+<h3>To do this</h3>
+
+<ul>
+<li>We assume that the 2 variables have a linear relationship (significant correlation)</li>
+<li>We set up a statistical <code>model</code> of how the relationship works</li>
+<li>We fit the data to the model using <code>linear regression</code></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="segue dark" id="slide-26" style="background:;">
+  
+  <hgroup>
+    <h2>Modelling the relationship</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="" id="slide-27" style="background:white;">
+  
+  <hgroup>
+    <h2>Setting up the linear model</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    
+<div style='float:left;width:48%;' class='centered'>
+  <ul>
+<li>Our model has several <code>coefficients</code></li>
+<li>These are like parts of the model:
+
+<ul>
+<li>The <strong>slope</strong> of the line</li>
+<li>The <strong>y-axis intercept</strong></li>
+</ul></li>
+<li>There is also variance, or error of the datapoints</li>
+<li>These are basically unknown and/or unsampled variables</li>
+<li>We can quantify how well the data is explained by the linear model using <code>R-squared</code></li>
+</ul>
+
+</div>
+<div style='float:right;width:48%;'>
+  <p><img src="assets/fig/unnamed-chunk-15-1.png" title="plot of chunk unnamed-chunk-15" alt="plot of chunk unnamed-chunk-15" width="80%" style="display: block; margin: auto;" /></p>
+
+</div>
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="" id="slide-28" style="background:white;">
+  
+  <hgroup>
+    <h2>Carrying out the regression</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    
+<div style='float:left;width:48%;' class='centered'>
+  <ul>
+<li>The regression fits the data to the linear model using least squares</li>
+<li>The slope is <strong>0.945</strong></li>
+<li>The y-axis intercept is <strong>10.291</strong></li>
+<li>R-squared is <strong>0.972</strong></li>
+<li>The remaining variation is due to unknown or unsampled variables</li>
+</ul>
+
+</div>
+<div style='float:right;width:48%;'>
+  <p><img src="assets/fig/unnamed-chunk-17-1.png" title="plot of chunk unnamed-chunk-17" alt="plot of chunk unnamed-chunk-17" width="80%" style="display: block; margin: auto;" /></p>
+
+</div>
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="" id="slide-29" style="background:white;">
+  
+  <hgroup>
+    <h2>Now the really cool bit</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    
+<div style='float:left;width:48%;' class='centered'>
+  <ul>
+<li>We can predict the dependent variable for any value of the independent variable</li>
+<li>y = slope*x + intercept</li>
+<li>For example, x = 2.5</li>
+<li>y = 2.5*0.945 + 10.291</li>
+<li>y = 12.6527176</li>
+</ul>
+
+<p><strong>Now</strong></p>
+
+<ul>
+<li>Let&#39;s call slope <em>m</em></li>
+<li>And the intercept <em>c</em></li>
+<li>y = <em>mx</em> + <em>c</em></li>
+<li>The general formula for a linear relationship</li>
+</ul>
+
+</div>
+<div style='float:right;width:48%;'>
+  <p><img src="assets/fig/unnamed-chunk-18-1.png" title="plot of chunk unnamed-chunk-18" alt="plot of chunk unnamed-chunk-18" width="80%" style="display: block; margin: auto;" /></p>
+
+</div>
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="segue dark" id="slide-30" style="background:;">
+  
+  <hgroup>
+    <h2>The graph is the visualisation of the model</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="slide-31" style="background:white;">
+  
+  <hgroup>
+    <h2>Linear regression for penguin data</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <p>Slope = 0.01384, y axis intercept = 0.01384, R-squared = 0.8063</p>
+
+<p><img src="assets/fig/unnamed-chunk-19-1.png" title="plot of chunk unnamed-chunk-19" alt="plot of chunk unnamed-chunk-19" width="90%" style="display: block; margin: auto auto auto 0;" /></p>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  
+  <hgroup>
+    <h2>Data analysis 4</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <ul>
+<li>Visualising two quantitative variables: scatterplots</li>
+<li>Dependent and independent variables</li>
+<li>Fitting a linear relationship: <code>least squares</code></li>
+<li>Correlation coefficients: <code>r</code></li>
+<li>Interpreting a correlation</li>
+<li>Quantifying the linear relationship</li>
+<li>Modelling the relationship: linear regression</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="thank-you-slide segue nobackground" id="slide-33">
+  <aside class="gdbar right"><img src="assets/img/ntu-shield.png"></aside>
+  <article class="flexbox vleft auto-fadein">
+    <h2>That&#39;s all folks!</h2>
+    <p><strong>Next: revision session and exam</strong></p>
+
+  </article>
+
+  <p class="auto-fadein" data-config-contact="">
+    
+  </p>
+</slide>
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='NA'>
+         1
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Visualising two quantitative variables'>
+         2
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='One categorical variable, one quantitative variable'>
+         3
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Two quantitative variables'>
+         4
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=5 title='Which variable goes on which axis?'>
+         5
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=6 title='Examples'>
+         6
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=7 title='ELISA assay development'>
+         7
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=8 title='Sometimes, it&#39;s uncertain'>
+         8
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=9 title='Exploratory analysis of Gentoo penguin data'>
+         9
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=10 title='Exploratory analysis of Gentoo penguin data'>
+         10
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=11 title='Fitting a linear relationship'>
+         11
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=12 title='Correlation'>
+         12
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=13 title='Linear relationship'>
+         13
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=14 title='Fitting a linear relationship to real data'>
+         14
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=15 title='Fitting a linear relationship to real data'>
+         15
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=16 title='Calculating the strength of the relationship'>
+         16
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=17 title='<code>r</code> shows the strength of correlation'>
+         17
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=18 title='The slope does not affect <code>r</code>'>
+         18
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=19 title='Pearson correlation for penguin data'>
+         19
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=20 title='Interpreting a correlation'>
+         20
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=21 title='Scientists have found the gene for...'>
+         21
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=22 title='Eating ice cream does not cause dehydration'>
+         22
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=23 title='Quantifying the linear relationship'>
+         23
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=24 title='<code>r</code> does not provide information on slope'>
+         24
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=25 title='Limitations of correlation'>
+         25
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=26 title='Modelling the relationship'>
+         26
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=27 title='Setting up the linear model'>
+         27
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=28 title='Carrying out the regression'>
+         28
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=29 title='Now the really cool bit'>
+         29
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=30 title='The graph is the visualisation of the model'>
+         30
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=31 title='Linear regression for penguin data'>
+         31
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=32 title='Data analysis 4'>
+         32
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=33 title='That&#39;s all folks!'>
+         33
+      </a>
+    </li>
+    
+    </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>

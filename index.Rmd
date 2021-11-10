@@ -1,0 +1,679 @@
+---
+title       : "Data Analysis 4"
+subtitle    : "BIOL10272: Practical Techniques"
+author      : Dr Axel Barlow
+job         : "email: axel.barlow@ntu.ac.uk"
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : zenburn      # {zenburn, tomorrow, solarized-dark, ...}
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {selfcontained, standalone, draft}
+knit        : slidify::knit2slides
+logo        : ntu-shield.png
+biglogo     : NTU_open-graph.png
+assets      : {assets: ../../assets}
+license     : by-nc-sa
+github:
+  user: draxelbarlow
+  repo: BIOL10272_data_analysis_4
+  branch: "gh-pages"
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+library(gganimate)
+library(RColorBrewer)
+library(knitr)
+library(palmerpenguins)
+```
+
+<!-- adding bold and italic options -->
+<style>
+em {
+  font-style: italic
+}
+strong {
+  font-weight: bold;
+}
+</style>
+
+## Data analysis 4
+
+- Visualising two quantitative variables: scatterplots
+- Dependent and independent variables
+- Fitting a linear relationship: `least squares`
+- Correlation coefficients: `r`
+- Interpreting a correlation
+- Quantifying the linear relationship
+- Modelling the relationship: linear regression
+
+--- .segue .dark 
+
+## Visualising two quantitative variables
+
+--- .class bg:white
+
+## One categorical variable, one quantitative variable
+
+```{r, out.width = "100%", out.height = "100%", fig.width = 12, fig.height = 7, dpi = 600, fig.align = "center", echo = FALSE}
+gen_chi <- filter(penguins, species %in% c("Chinstrap", "Gentoo"))
+gen_chi <- gen_chi %>% drop_na()
+
+plot_bar2 <- ggplot(gen_chi, aes(species, body_mass_g, colour=species)) +
+  geom_jitter(width=0.15, cex=3) +
+  ylab("body mass (g)") +
+  theme_bw(base_size = 25) +
+  
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+  )
+
+plot_bar2
+```
+
+--- .class bg:white
+
+## Two quantitative variables
+
+```{r, out.width = "95%", fig.width = 12, fig.height = 7, dpi = 600, fig.align = "left", echo = FALSE}
+plot_scatter1 <- ggplot(gen_chi, aes(body_mass_g, flipper_length_mm)) +
+  geom_point(cex=5, pch=21, fill="blue") +
+  theme_bw(base_size = 25) +
+  xlab("body mass (g)") +
+  ylab("wing length (mm)") +
+  
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+  )
+
+plot_scatter1
+```
+
+--- .class #id
+
+## Which variable goes on which axis?
+
+- We need to identify the `independent` and `dependent` variables
+- The independent variable goes on the *x* axis
+- The dependent variable goes on the *y* axis
+
+### In an experiment
+- The independent variable is **the thing we manipulate**
+- The dependent variable is **the thing we expect to change**
+- We hypothesise the independent variable has an effect on the dependendent variable
+- The null hypothesis is no effect
+
+--- .class #id
+
+## Examples
+
+Dependent variable|Independent variable
+---------------------|--------------------
+Number of species|Habitat
+Blood pressure|Drug test and control groups
+Number of genes|Free living or parasitic microorganism
+Disease prevalence|Country
+Gene expression|Developmental stage
+
+--- .class bg:white
+
+## ELISA assay development
+
+- Measure optical density at known protein concentrations
+
+```{r, out.width = "85%", fig.width = 12, fig.height = 7, dpi = 600, fig.align = "left", echo = FALSE}
+plot_scatter <- ggplot(DNase, aes(conc, density)) +
+  geom_point(cex=5, pch=21, fill="blue") +
+  theme_bw(base_size = 25) +
+  xlab("Protein concentration (ng/mL)") +
+  ylab("Optical density") +
+  
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+  )
+
+plot_scatter
+```
+
+--- .segue .dark 
+
+## Sometimes, it's uncertain
+
+--- .class bg:white
+
+## Exploratory analysis of Gentoo penguin data
+
+```{r, out.width = "95%", fig.width = 12, fig.height = 7, dpi = 600, fig.align = "left", echo = FALSE}
+gen <- filter(penguins, species %in% c("Gentoo"))
+gen <- gen %>% drop_na()
+
+plot_scatter3 <- ggplot(gen, aes(bill_length_mm, bill_depth_mm)) +
+  geom_point(cex=5, pch=21, fill="purple") +
+  theme_bw(base_size = 25) +
+  xlab("Bill length (mm)") +
+  ylab("Bill depth (mm)") +
+  
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+  )
+
+plot_scatter3
+```
+
+--- .class bg:white
+
+## Exploratory analysis of Gentoo penguin data
+
+```{r, out.width = "95%", fig.width = 12, fig.height = 7, dpi = 600, fig.align = "left", echo = FALSE}
+gen <- filter(penguins, species %in% c("Gentoo"))
+gen <- gen %>% drop_na()
+
+plot_scatter3 <- ggplot(gen, aes(bill_depth_mm, bill_length_mm)) +
+  geom_point(cex=5, pch=21, fill="purple") +
+  theme_bw(base_size = 25) +
+  ylab("Bill length (mm)") +
+  xlab("Bill depth (mm)") +
+  
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+  )
+
+plot_scatter3
+```
+
+--- .segue .dark 
+
+## Fitting a linear relationship
+
+--- .class #id
+
+## Correlation
+
+A connection, or relationship, between two or more things
+
+### In Biosciences
+
+A linear relationship between two quantitative variables
+
+--- &twocol
+
+## Linear relationship
+
+- The points in the scatterplot form a straight line
+
+*** =left
+
+```{r, out.width = "90%", fig.width = 6, fig.height = 5, dpi = 600, fig.align = "left", echo = FALSE}
+pos_eg <- data.frame(var1=c(1:10), var2=c(1:10))
+
+plot_scatter1 <- ggplot(pos_eg, aes(var1, var2)) +
+  geom_point(cex=4, pch=21, fill="coral") +
+  theme_bw(base_size = 20) +
+  xlab("Quantitative variable 1") +
+  ylab("Quantitative variable 2")+
+  
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+  )
+
+plot_scatter1
+```
+
+- Positive correlation
+
+*** =right
+
+```{r, out.width = "90%", fig.width = 6, fig.height = 5, dpi = 600, fig.align = "left", echo = FALSE}
+pos_eg <- data.frame(var1=c(1:10), var2=c(10:1))
+
+plot_scatter2 <- ggplot(pos_eg, aes(var1, var2)) +
+  geom_point(cex=4, pch=21, fill="coral") +
+  theme_bw(base_size = 20) +
+  xlab("Quantitative variable 1") +
+  ylab("Quantitative variable 2")+
+  
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+  )
+
+plot_scatter2
+```
+
+- Negative correlation
+
+--- .class bg:white
+
+## Fitting a linear relationship to real data
+
+- We can add a `line of best fit` using the method of `least squares`
+- The straight line that minimises the square of the `residuals`
+
+```{r, out.width = "80%", fig.width = 12, fig.height = 7, dpi = 600, fig.align = "center", echo = FALSE}
+gen_chi <- filter(penguins, species %in% c("Chinstrap", "Gentoo"))
+gen_chi <- gen_chi %>% drop_na()
+fit <- lm(flipper_length_mm ~ body_mass_g, data=gen_chi)
+gen_chi$predicted <- predict(fit)
+gen_chi$residuals <- residuals(fit)
+
+plot_scatter3 <- ggplot(gen_chi, aes(body_mass_g, flipper_length_mm)) +
+  geom_point(cex=5, pch=21, fill="blue") +
+  geom_smooth(method=lm, formula = y~x, se=FALSE, col="black", lwd=2) +
+  theme_bw(base_size = 25) +
+  xlab("body mass (g)") +
+  ylab("wing length (mm)")+
+  
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+  )
+
+plot_scatter3
+```
+
+--- .class bg:white
+
+## Fitting a linear relationship to real data
+
+- We can add a `line of best fit` using the method of `least squares`
+- The straight line that minimises the square of the `residuals`
+
+```{r, out.width = "80%", fig.width = 12, fig.height = 7, dpi = 600, fig.align = "center", echo = FALSE}
+plot_scatter3 +
+   geom_segment(aes(xend = body_mass_g, yend = predicted), col="red")
+```
+
+--- .class #id
+
+## Calculating the strength of the relationship
+
+### If the residuals are small, the variables have a strong linear relationship
+
+- We can measure this strength using a `correlation coefficient`
+- We will use the `Pearson correlation coefficient`, which can be represented as `r`
+- Scales from -1 to +1
+- 0 = **no** linear relationship
+- +1 = perfect **positive** linear relationship
+- -1 = perfect **negative** linear relationship
+- We can also obtain a `p-value`
+- **Null hypothesis**: there is no linear relationship, the true `r` = 0
+
+--- .class bg:white
+
+## `r` shows the strength of correlation
+
+```{r, out.width = "100%", fig.width = 12, fig.height = 6, dpi = 600, fig.align = "center", echo = FALSE}
+#Title: An example of the correlation of x and y for various distributions of (x,y) pairs
+#Tags: Mathematics; Statistics; Correlation
+#Author: Denis Boigelot
+#Packets needed : mvtnorm (rmvnorm), RSVGTipsDevice (devSVGTips)
+#How to use: output()
+#
+#This is an translated version in R of an Matematica 6 code by Imagecreator.
+
+library(mvtnorm)
+library(RSVGTipsDevice)
+
+MyPlot <- function(xy, xlim = c(-4, 4), ylim = c(-4, 4), eps = 1e-15) {
+   title = round(cor(xy[,1], xy[,2]), 1)
+   if (sd(xy[,2]) < eps) title = "" # corr. coeff. is undefined
+   plot(xy, main = title, cex.main = 2, xlab = "", ylab = "",
+        col = "darkblue", pch = 16, cex = 0.8,
+        xaxt = "n", yaxt = "n", bty = "n",
+        xlim = xlim, ylim = ylim)
+}
+
+MvNormal <- function(n = 1000, cor = 0.8) {
+   for (i in cor) {
+      sd = matrix(c(1, i, i, 1), ncol = 2)
+      x = rmvnorm(n, c(0, 0), sd)
+      MyPlot(x)
+   }
+}
+
+rotation <- function(t, X) return(X %*% matrix(c(cos(t), sin(t), -sin(t), cos(t)), ncol = 2))
+
+RotNormal <- function(n = 1000, t = pi/2) {
+   sd = matrix(c(1, 1, 1, 1), ncol = 2)
+   x = rmvnorm(n, c(0, 0), sd)
+   for (i in t)
+      MyPlot(rotation(i, x))
+}
+
+Others <- function(n = 1000) {
+   x = runif(n, -1, 1)
+   y = 4 * (x^2 - 1/2)^2 + runif(n, -1, 1)/3
+   MyPlot(cbind(x,y), xlim = c(-1, 1), ylim = c(-1/3, 1+1/3))
+
+   y = runif(n, -1, 1)
+   xy = rotation(-pi/8, cbind(x,y))
+   lim = sqrt(2+sqrt(2)) / sqrt(2)
+   MyPlot(xy, xlim = c(-lim, lim), ylim = c(-lim, lim))
+
+   xy = rotation(-pi/8, xy)
+   MyPlot(xy, xlim = c(-sqrt(2), sqrt(2)), ylim = c(-sqrt(2), sqrt(2)))
+   
+   y = 2*x^2 + runif(n, -1, 1)
+   MyPlot(cbind(x,y), xlim = c(-1, 1), ylim = c(-1, 3))
+
+   y = (x^2 + runif(n, 0, 1/2)) * sample(seq(-1, 1, 2), n, replace = TRUE)
+   MyPlot(cbind(x,y), xlim = c(-1.5, 1.5), ylim = c(-1.5, 1.5))
+
+   y = cos(x*pi) + rnorm(n, 0, 1/8)
+   x = sin(x*pi) + rnorm(n, 0, 1/8)
+   MyPlot(cbind(x,y), xlim = c(-1.5, 1.5), ylim = c(-1.5, 1.5))
+
+   xy1 = rmvnorm(n/4, c( 3,  3))
+   xy2 = rmvnorm(n/4, c(-3,  3))
+   xy3 = rmvnorm(n/4, c(-3, -3))
+   xy4 = rmvnorm(n/4, c( 3, -3))
+   MyPlot(rbind(xy1, xy2, xy3, xy4), xlim = c(-3-4, 3+4), ylim = c(-3-4, 3+4))
+}
+
+output <- function() {
+#   devSVGTips(width = 7, height = 3.2) # remove first and last line for no svg exporting
+#   par(mfrow = c(3, 7), oma = c(0,0,0,0), mar=c(2,2,2,0))
+#   MvNormal(800, c(1.0, 0.8, 0.4, 0.0, -0.4, -0.8, -1.0));
+#   RotNormal(200, c(0, pi/12, pi/6, pi/4, pi/2-pi/6, pi/2-pi/12, pi/2));
+#   Others(800)
+#   dev.off() # remove first and last line for no svg exporting
+
+   par(mfrow = c(2, 4), oma = c(0,0,0,0), mar=c(2,2,2,0))
+   MvNormal(800, c(1.0, 0.8, 0.4, 0.00));
+   MvNormal(800, c(0.0, -0.4, -0.8, -1.0));
+
+}
+
+output()
+```
+
+*R code for plot by Denis Boigelot*
+
+--- .class bg:white
+
+## The slope does not affect `r`
+
+```{r, out.width = "100%", fig.width = 12, fig.height = 6, dpi = 600, fig.align = "center", echo = FALSE}
+   par(mfrow = c(2, 3), oma = c(0,0,0,0), mar=c(2,2,2,0))
+   RotNormal(200, c(0, pi/12, pi/6));
+   RotNormal(200, c(pi/2, pi/2-pi/12, pi/2-pi/6));
+```
+
+*R code for plot by Denis Boigelot*
+
+--- .class bg:white
+
+## Pearson correlation for penguin data
+
+```{r, out.width = "95%", fig.width = 12, fig.height = 7, dpi = 600, fig.align = "left", echo = FALSE}
+plot_scatter3 +
+  ggtitle("r = 0.899, p < 0.01")
+
+```
+
+--- .segue .dark 
+
+## Interpreting a correlation
+
+--- .class #id
+
+## Scientists have found the gene for...
+
+<iframe src = 'https://news.sky.com/story/covid-19-gene-that-doubles-risk-of-death-from-covid-identified-by-oxford-university-scientists-12459684' height='600px'></iframe>
+
+--- .class bg:white
+
+## Eating ice cream does not cause dehydration
+
+```{r, out.width = "90%", fig.width = 12, fig.height = 7, dpi = 600, fig.align = "center", echo = FALSE}
+ice_can <- data.frame(icecream=jitter(1:10, factor=3), cancer=jitter(11:20, factor=5))
+
+plot_scatter2 <- ggplot(ice_can, aes(icecream, cancer)) +
+  geom_point(cex=5, pch=21, fill="darkred") +
+  geom_smooth(method=lm, formula = y~x, se=FALSE, col="black", lwd=1) +
+  theme_bw(base_size = 20) +
+  xlab("Ice cream sales (thousand per month)") +
+  ylab("Dehydration (% admissions per month)") +
+  ggtitle("r = 0.977, p < 0.01")+
+  
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+  )
+
+plot_scatter2
+```
+
+--- .segue .dark 
+
+## Quantifying the linear relationship
+
+--- .class bg:white
+
+## `r` does not provide information on slope
+
+### but isn't the slope interesting?
+
+```{r, out.width = "100%", fig.width = 12, fig.height = 4.5, dpi = 600, fig.align = "center", echo = FALSE}
+library(mvtnorm)
+library(RSVGTipsDevice)
+
+MyPlot <- function(xy, xlim = c(-4, 4), ylim = c(-4, 4), eps = 1e-15) {
+   title = round(cor(xy[,1], xy[,2]), 1)
+   if (sd(xy[,2]) < eps) title = "" # corr. coeff. is undefined
+   plot(xy, main = title, cex.main = 2, xlab = "", ylab = "",
+        col = "darkblue", pch = 16, cex = 0.8,
+        xaxt = "n", yaxt = "n", bty = "n",
+        xlim = xlim, ylim = ylim)
+}
+
+MvNormal <- function(n = 1000, cor = 0.8) {
+   for (i in cor) {
+      sd = matrix(c(1, i, i, 1), ncol = 2)
+      x = rmvnorm(n, c(0, 0), sd)
+      MyPlot(x)
+   }
+}
+
+rotation <- function(t, X) return(X %*% matrix(c(cos(t), sin(t), -sin(t), cos(t)), ncol = 2))
+
+RotNormal <- function(n = 1000, t = pi/2) {
+   sd = matrix(c(1, 1, 1, 1), ncol = 2)
+   x = rmvnorm(n, c(0, 0), sd)
+   for (i in t)
+      MyPlot(rotation(i, x))
+}
+
+Others <- function(n = 1000) {
+   x = runif(n, -1, 1)
+   y = 4 * (x^2 - 1/2)^2 + runif(n, -1, 1)/3
+   MyPlot(cbind(x,y), xlim = c(-1, 1), ylim = c(-1/3, 1+1/3))
+
+   y = runif(n, -1, 1)
+   xy = rotation(-pi/8, cbind(x,y))
+   lim = sqrt(2+sqrt(2)) / sqrt(2)
+   MyPlot(xy, xlim = c(-lim, lim), ylim = c(-lim, lim))
+
+   xy = rotation(-pi/8, xy)
+   MyPlot(xy, xlim = c(-sqrt(2), sqrt(2)), ylim = c(-sqrt(2), sqrt(2)))
+   
+   y = 2*x^2 + runif(n, -1, 1)
+   MyPlot(cbind(x,y), xlim = c(-1, 1), ylim = c(-1, 3))
+
+   y = (x^2 + runif(n, 0, 1/2)) * sample(seq(-1, 1, 2), n, replace = TRUE)
+   MyPlot(cbind(x,y), xlim = c(-1.5, 1.5), ylim = c(-1.5, 1.5))
+
+   y = cos(x*pi) + rnorm(n, 0, 1/8)
+   x = sin(x*pi) + rnorm(n, 0, 1/8)
+   MyPlot(cbind(x,y), xlim = c(-1.5, 1.5), ylim = c(-1.5, 1.5))
+
+   xy1 = rmvnorm(n/4, c( 3,  3))
+   xy2 = rmvnorm(n/4, c(-3,  3))
+   xy3 = rmvnorm(n/4, c(-3, -3))
+   xy4 = rmvnorm(n/4, c( 3, -3))
+   MyPlot(rbind(xy1, xy2, xy3, xy4), xlim = c(-3-4, 3+4), ylim = c(-3-4, 3+4))
+}
+
+output <- function() {
+
+   par(mfrow = c(1, 3), oma = c(0,0,0,0), mar=c(2,2,15,0))
+   RotNormal(200, c(0, pi/12, pi/6));
+}
+
+output()
+```
+
+*R code for plot by Denis Boigelot*
+
+--- .class #id
+
+## Limitations of correlation
+
+- We would like to be able to **quantify** how much a variable changes
+- This would allow us to **predict** the value of one variable if we know the value of another
+- Even `extrapolate` beyond the range of measurement
+
+### To do this
+
+- We assume that the 2 variables have a linear relationship (significant correlation)
+- We set up a statistical `model` of how the relationship works
+- We fit the data to the model using `linear regression`
+
+--- .segue .dark 
+
+## Modelling the relationship
+
+--- &twocol bg:white
+
+## Setting up the linear model
+
+*** =left
+
+- Our model has several `coefficients`
+- These are like parts of the model:
+  + The **slope** of the line
+  + The **y-axis intercept**
+- There is also variance, or error of the datapoints
+- These are basically unknown and/or unsampled variables
+- We can quantify how well the data is explained by the linear model using `R-squared`
+
+*** =right
+
+```{r, out.width = "80%", fig.width = 6, fig.height = 7, dpi = 600, fig.align = "center", echo = FALSE, message = FALSE}
+#example <- data.frame(independent=c(1:10), dependent=jitter(11:20, factor=4))
+example <- read_csv("./data/jitter_eg", col_names=TRUE)
+
+plot_scatter2 <- ggplot(example, aes(independent, dependent)) +
+  geom_point(cex=5, pch=21, fill="blue") +
+  geom_smooth(method=lm, formula = y~x, se=FALSE, col="blue", lwd=1, fullrange=TRUE) +
+  xlim(0, 10) +
+  ylim(8, 21) +
+  theme_bw(base_size = 20) +
+  xlab("Independent variable") +
+  ylab("Dependent variable") +
+  geom_segment(aes(x = 2.1, xend = 7.5, y = 12, yend = 12), col="red") +
+  geom_segment(aes(x = 7.5, xend = 7.5, y = 12, yend = 17.5), col="red")
+
+plot_scatter2
+```
+
+--- &twocol bg:white
+
+## Carrying out the regression
+
+```{r, echo=FALSE}
+mylm <- summary(lm(dependent ~ independent, data = example))
+```
+
+*** =left
+
+- The regression fits the data to the linear model using least squares
+- The slope is **`r format(round(mylm$coefficients[2], 3))`**
+- The y-axis intercept is **`r format(round(mylm$coefficients[1], 3))`**
+- R-squared is **`r format(round(mylm$adj.r.squared, 3))`**
+- The remaining variation is due to unknown or unsampled variables
+
+*** =right
+
+```{r, out.width = "80%", fig.width = 6, fig.height = 7, dpi = 600, fig.align = "center", echo = FALSE}
+plot_scatter2 
+```
+
+--- &twocol bg:white
+
+## Now the really cool bit
+
+*** =left
+
+- We can predict the dependent variable for any value of the independent variable
+- y = slope*x + intercept
+- For example, x = 2.5
+- y = 2.5*`r format(round(mylm$coefficients[2], 3))` + `r format(round(mylm$coefficients[1], 3))`
+- y = `r (2.5 * mylm$coefficients[2]) + mylm$coefficients[1]`
+
+**Now**
+
+- Let's call slope *m*
+- And the intercept *c*
+- y = *mx* + *c*
+- The general formula for a linear relationship
+
+*** =right
+
+```{r, out.width = "80%", fig.width = 6, fig.height = 7, dpi = 600, fig.align = "center", echo = FALSE}
+plot_scatter2 
+```
+
+--- .segue .dark 
+
+## The graph is the visualisation of the model
+
+--- .class bg:white
+
+## Linear regression for penguin data
+
+Slope = 0.01384, y axis intercept = 0.01384, R-squared = 0.8063
+
+```{r, out.width = "90%", fig.width = 12, fig.height = 7, dpi = 600, fig.align = "left", echo = FALSE}
+gen_chi <- filter(penguins, species %in% c("Chinstrap", "Gentoo"))
+gen_chi <- gen_chi %>% drop_na()
+penlm <- summary(lm(flipper_length_mm ~ body_mass_g, data = gen_chi))
+
+plot_scatter3 <- ggplot(gen_chi, aes(body_mass_g, flipper_length_mm)) +
+  geom_point(cex=5, pch=21, fill="blue") +
+  geom_smooth(method=lm, formula = y~x, se=FALSE, col="black", lwd=2) +
+  theme_bw(base_size = 25) +
+  xlab("body mass (g)") +
+  ylab("wing length (mm)") +
+  
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+  )
+
+plot_scatter3
+```
+
+--- .class #id
+
+## Data analysis 4
+
+- Visualising two quantitative variables: scatterplots
+- Dependent and independent variables
+- Fitting a linear relationship: `least squares`
+- Correlation coefficients: `r`
+- Interpreting a correlation
+- Quantifying the linear relationship
+- Modelling the relationship: linear regression
+
+--- &thankyou
+
+## That's all folks!
+
+**Next: revision session and exam**
